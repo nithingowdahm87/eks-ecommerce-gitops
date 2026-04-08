@@ -1,0 +1,7 @@
+apiVersion: v2
+name: nithin-shop-cart-chart
+description: >-
+  A Helm chart for the nithin-shop carts
+  service
+type: application
+version: 1.2.2
