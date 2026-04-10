@@ -64,19 +64,9 @@ Key highlights:
 ### ArgoCD — Operations Dashboard
 ![ArgoCD](./docs/screenshots/argoCD.png)
 
-| Component                  | Language | Docker Image                                                                                    | Helm Chart            | Description                             |
-| -------------------------- | -------- | ----------------------------------------------------------------------------------------------- | --------------------- | --------------------------------------- |
-| [UI](./src/ui/)            | Java     | `nithingowdahm87/shopping:nithin-shop-ui-v1.0`       | [src/ui/chart](./src/ui/chart)       | Store user interface                    |
-| [Catalog](./src/catalog/)  | Go       | `nithingowdahm87/shopping:nithin-shop-catalog-v1.0`  | [src/catalog/chart](./src/catalog/chart)  | Product catalog API                     |
-| [Cart](./src/cart/)        | Java     | `nithingowdahm87/shopping:nithin-shop-cart-v1.0`     | [src/cart/chart](./src/cart/chart)     | User shopping carts API                 |
-| [Orders](./src/orders)     | Java     | `nithingowdahm87/shopping:nithin-shop-orders-v1.0`   | [src/orders/chart](./src/orders/chart)   | User orders API                         |
-| [Checkout](./src/checkout) | Node     | `nithingowdahm87/shopping:nithin-shop-checkout-v1.0` | [src/checkout/chart](./src/checkout/chart) | API to orchestrate the checkout process |
 
-> All services running healthy in the `nithin-shop` namespace, managed by ArgoCD `v2.10.4`.
 
----
-
-## Architecture
+## Quick Start
 
 1. **Install Prerequisites**: AWS CLI, Terraform, kubectl, Docker, Helm
 2. **Configure AWS**: `aws configure` with appropriate credentials
@@ -84,7 +74,9 @@ Key highlights:
 4. **Deploy Infrastructure**: Run Terraform in two phases (see [Getting Started](#getting-started))
 5. **Access Application**: Get load balancer URL and browse the retail store
 
-![Infrastructure Architecture Diagram](./docs/images/architecture.png)
+## Architecture
+
+![Infrastructure Architecture Diagram](./docs/images/architecture.jpg)
 
 **Core infrastructure components:**
 - **VPC** — Custom VPC with public and private subnets across multiple AZs
@@ -100,15 +92,17 @@ Key highlights:
 
 ![Application Architecture Diagram](./docs/images/application-architecture.png)
 
-| Service | Language | Docker Image | Description |
-|---|---|---|---|
-| [UI](./src/ui/) | Java | `nithin/nithin-shop-ui:v1.0` | Store frontend — product browsing, cart, checkout UI |
-| [Catalog](./src/catalog/) | Go | `nithin/nithin-shop-catalog:v1.0` | Product catalog REST API |
-| [Cart](./src/cart/) | Java | `nithin/nithin-shop-cart:v1.0` | Shopping cart management API |
-| [Orders](./src/orders/) | Java | `nithin/nithin-shop-orders:v1.0` | Order creation and tracking API |
-| [Checkout](./src/checkout/) | Node.js | `nithin/nithin-shop-checkout:v1.0` | Checkout orchestration API |
+| Service | Language | Docker Image | Helm Chart | Description |
+|---|---|---|---|---|
+| [UI](./src/ui/) | Java | `nithingowdahm87/shopping:nithin-shop-ui-v1.0` | [src/ui/chart](./src/ui/chart) | Store frontend — product browsing, cart, checkout UI |
+| [Catalog](./src/catalog/) | Go | `nithingowdahm87/shopping:nithin-shop-catalog-v1.0` | [src/catalog/chart](./src/catalog/chart) | Product catalog REST API |
+| [Cart](./src/cart/) | Java | `nithingowdahm87/shopping:nithin-shop-cart-v1.0` | [src/cart/chart](./src/cart/chart) | Shopping cart management API |
+| [Orders](./src/orders/) | Java | `nithingowdahm87/shopping:nithin-shop-orders-v1.0` | [src/orders/chart](./src/orders/chart) | Order creation and tracking API |
+| [Checkout](./src/checkout/) | Node.js | `nithingowdahm87/shopping:nithin-shop-checkout-v1.0` | [src/checkout/chart](./src/checkout/chart) | Checkout orchestration API |
 
-All services run in the `nithin-shop` Kubernetes namespace and communicate over internal cluster DNS.
+> All services running healthy in the `nithin-shop` namespace, managed by ArgoCD `v2.10.4`.
+
+All services communicate over internal cluster DNS.
 
 ---
 
@@ -232,10 +226,6 @@ Once ArgoCD is deployed, you can access the web interface at `https://localhost:
 
 ## CI/CD Pipeline
 
-
-
-### Step 11: Monitor Application Deployment
-
 ### Setup GitHub Secrets
 
 Go to your repo → **Settings → Secrets and variables → Actions** and add:
@@ -320,7 +310,7 @@ Destroy all AWS resources when done to avoid charges.
 ### Phase 1 — Remove EKS Cluster
 
 ```bash
-terraform destroy -target=module.retail_app_eks --auto-approve
+terraform destroy -target=module.nithin_shop_eks --auto-approve
 ```
 
 ### Phase 2 — Remove Remaining Resources
