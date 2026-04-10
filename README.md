@@ -1,492 +1,428 @@
-# Retail Store Sample App - GitOps with Amazon EKS Auto Mode
+# eks-ecommerce-gitops
+
+<div align="center">
 
 ![Banner](./docs/images/banner.png)
 
-<div align="center">
-  <div align="center">
+[![GitHub Stars](https://img.shields.io/github/stars/nithingowdahm87/eks-ecommerce-gitops?style=flat-square)](https://github.com/nithingowdahm87/eks-ecommerce-gitops/stargazers)
+[![GitHub License](https://img.shields.io/github/license/nithingowdahm87/eks-ecommerce-gitops?color=green&style=flat-square)](./LICENSE)
+[![Kubernetes](https://img.shields.io/badge/Kubernetes-1.23%2B-326CE5?style=flat-square&logo=kubernetes&logoColor=white)](https://kubernetes.io)
+[![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC?style=flat-square&logo=terraform&logoColor=white)](https://www.terraform.io)
+[![ArgoCD](https://img.shields.io/badge/ArgoCD-GitOps-EF7B4D?style=flat-square&logo=argo&logoColor=white)](https://argoproj.github.io/cd/)
+[![AWS EKS](https://img.shields.io/badge/AWS-EKS-FF9900?style=flat-square&logo=amazonaws&logoColor=white)](https://aws.amazon.com/eks/)
 
-[![Stars](https://img.shields.io/github/stars/LondheShubham153/nithin-shop-sample-app)](Stars)
-![GitHub License](https://img.shields.io/github/license/LondheShubham153/nithin-shop-sample-app?color=green)
-![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%LondheShubham153%2Fnithin-shop-sample-app%2Frefs%2Fheads%2Fmain%2F.release-please-manifest.json&query=%24%5B%22.%22%5D&label=release)
+**A production-grade microservices ecommerce platform deployed on AWS EKS using GitOps, Terraform, Docker, and ArgoCD.**
 
+*Built and deployed independently by [NITHIN](https://github.com/nithingowdahm87)*
 
-  </div>
-
-  <strong>
-  <h2>AWS Containers Retail Sample</h2>
-  </strong>
 </div>
 
-This is a sample application designed to illustrate various concepts related to containers on AWS. It presents a sample retail store application including a product catalog, shopping cart and checkout, deployed using modern DevOps practices including GitOps and Infrastructure as Code.
+---
 
 ## Table of Contents
 
 - [Overview](#overview)
+- [Live Screenshots](#live-screenshots)
 - [Architecture](#architecture)
+- [Microservices](#microservices)
 - [Prerequisites](#prerequisites)
-- [Quick Start](#quick-start)
-- [Branch Strategy](#branch-strategy)
 - [Getting Started](#getting-started)
-- [GitOps Workflow](#gitops-workflow)
-- [EKS Auto Mode](#eks-auto-mode)
-- [Infrastructure Components](#infrastructure-components)
+- [Terraform Deployment](#terraform-deployment)
+- [GitOps with ArgoCD](#gitops-with-argocd)
 - [CI/CD Pipeline](#cicd-pipeline)
-- [Monitoring and Observability](#monitoring-and-observability)
+- [Monitoring](#monitoring)
 - [Cleanup](#cleanup)
 - [Troubleshooting](#troubleshooting)
 
+---
+
 ## Overview
 
-The Retail Store Sample App demonstrates a modern microservices architecture deployed on AWS EKS using GitOps principles. The application consists of multiple services that work together to provide a complete retail store experience:
+This project demonstrates a fully containerized, cloud-native ecommerce application built from the ground up using modern DevOps practices. It features a multi-service architecture running on **Amazon EKS Auto Mode**, with GitOps-driven deployments managed by **ArgoCD**, infrastructure provisioned via **Terraform**, and a full CI/CD pipeline through **GitHub Actions**.
 
-![Application Architecture Diagram](./docs/images/application-architecture.png)
+Key highlights:
+- **5 independent microservices** — each containerized, versioned, and deployed separately
+- **GitOps workflow** — all deployments are Git-driven; no manual `kubectl apply` in production
+- **EKS Auto Mode** — AWS manages node lifecycle, scaling, and patching automatically
+- **Dual-branch strategy** — `main` for demo/testing with public images, `gitops` branch for full production CI/CD
+- **Helm charts** — each service has its own chart for clean, versioned releases
+- **Full observability** — Prometheus + Grafana stack included
 
-- **UI Service**: Java-based frontend
-- **Catalog Service**: Go-based product catalog API
-- **Cart Service**: Java-based shopping cart API
-- **Orders Service**: Java-based order management API
-- **Checkout Service**: Node.js-based checkout orchestration API
+---
 
-## Infrastructure Architecture
+## Live Screenshots
 
-![Infrastructure Architecture Diagram](./docs/images/architecture.png)
+### Storefront — Product Catalog
+![Storefront](./docs/screenshots/app1.jpg)
 
-The Infrastructure Architecture follows cloud-native best practices:
+### Product Listing (Second Page)
+![Product Listing](./docs/screenshots/app2.jpg)
 
-- **Microservices**: Each component is developed and deployed independently
-- **Containerization**: All services run as containers on Kubernetes
-- **GitOps**: Infrastructure and application deployment managed through Git
-- **Infrastructure as Code**: All AWS resources defined using Terraform
-- **CI/CD**: Automated build and deployment pipelines with GitHub Actions
+### Cart — Loadout View
+![Cart](./docs/screenshots/app3.jpg)
 
-## Application Architecture
+### Checkout — Rendezvous Location
+![Checkout](./docs/screenshots/app4.jpg)
 
-The application has been deliberately over-engineered to generate multiple de-coupled components. These components generally have different infrastructure dependencies, and may support multiple "backends" (example: Carts service supports MongoDB or DynamoDB).
+### Application Services — Health Status
+![Services Health](./docs/screenshots/app5.jpg)
 
-![Architecture](https://github.com/aws-containers/nithin-shop-sample-app/raw/main/docs/images/architecture.png)
+### Kubernetes Metadata — Pod Info
+![K8s Metadata](./docs/screenshots/app6.jpg)
 
-| Component                  | Language | Container Image                                                             | Helm Chart                                                                        | Description                             |
-| -------------------------- | -------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------- |
-| [UI](./src/ui/)            | Java     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-ui)       | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-ui-chart)       | Store user interface                    |
-| [Catalog](./src/catalog/)  | Go       | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-catalog)  | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-catalog-chart)  | Product catalog API                     |
-| [Cart](./src/cart/)        | Java     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-cart)     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-cart-chart)     | User shopping carts API                 |
-| [Orders](./src/orders)     | Java     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-orders)   | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-orders-chart)   | User orders API                         |
-| [Checkout](./src/checkout) | Node     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-checkout) | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-checkout-chart) | API to orchestrate the checkout process |
+### ArgoCD — Applications Dashboard
+![ArgoCD Dashboard](./docs/screenshots/argoCD.jpg)
 
+> All services running healthy in the `nithin-shop` namespace, managed by ArgoCD `v2.10.4`.
 
-## Quick Start
+---
 
-**Want to deploy immediately?** Follow these steps for a basic deployment:
+## Architecture
 
-1. **Install Prerequisites**: AWS CLI, Terraform, kubectl, Docker, Helm
-2. **Configure AWS**: `aws configure` with appropriate credentials
-3. **Clone Repository**: `git clone https://github.com/NITHIN/nithin-shop-k8s-ecommerce.git`
-4. **Deploy Infrastructure**: Run Terraform in two phases (see [Getting Started](#getting-started))
-5. **Access Application**: Get load balancer URL and browse the retail store
+### Infrastructure Architecture
 
-**Need advanced GitOps workflow?** See [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) for automated CI/CD setup.
+```
+┌─────────────────────────────────────────────────────┐
+│                     AWS Cloud                        │
+│                                                     │
+│  ┌─────────────────────────────────────────────┐   │
+│  │              Amazon EKS (Auto Mode)          │   │
+│  │                                             │   │
+│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  │   │
+│  │  │    UI    │  │ Catalog  │  │   Cart   │  │   │
+│  │  │  Service │  │ Service  │  │  Service │  │   │
+│  │  └──────────┘  └──────────┘  └──────────┘  │   │
+│  │                                             │   │
+│  │  ┌──────────┐  ┌──────────┐                 │   │
+│  │  │  Orders  │  │Checkout  │                 │   │
+│  │  │  Service │  │ Service  │                 │   │
+│  │  └──────────┘  └──────────┘                 │   │
+│  │                                             │   │
+│  │  Namespace: nithin-shop                     │   │
+│  └─────────────────────────────────────────────┘   │
+│                                                     │
+│  ┌────────────┐  ┌──────────┐  ┌───────────────┐  │
+│  │    VPC     │  │  ArgoCD  │  │  NGINX Ingress │  │
+│  │ (pub+priv) │  │ (GitOps) │  │  + Cert Manager│  │
+│  └────────────┘  └──────────┘  └───────────────┘  │
+└─────────────────────────────────────────────────────┘
+         ↑                    ↑
+   Terraform IaC        GitHub Actions CI/CD
+```
 
-## Branch Strategy
+**Core infrastructure components:**
+- **VPC** — Custom VPC with public and private subnets across multiple AZs
+- **EKS Auto Mode** — Managed Kubernetes with automatic node provisioning and scaling
+- **IAM** — Fine-grained roles and policies for cluster and workload access
+- **ArgoCD** — GitOps operator that syncs Kubernetes state from this repository
+- **NGINX Ingress** — External traffic routing and load balancing
+- **Cert Manager** — Automated TLS certificate provisioning
 
-This repository uses a **dual-branch approach** for different deployment scenarios:
+---
 
-### 🌐 **Public Application (Main Branch)**
-- **Purpose**: Simple deployment with public images
-- **Images**: Public ECR (stable versions like v1.2.2)
-- **Deployment**: Manual control with umbrella chart
-- **Updates**: Manual only
-- **Best for**: Demos, learning, quick testing, simple deployments
+## Microservices
 
-### 🏭 **Production (GitOps Branch)**
-- **Purpose**: Full production workflow with CI/CD pipeline
-- **Images**: Private ECR (auto-updated with commit hashes)
-- **Deployment**: Automated via GitHub Actions
-- **Updates**: Automatic on code changes
-- **Best for**: Production environments, automated workflows, enterprise deployments
+| Service | Language | Docker Image | Description |
+|---|---|---|---|
+| [UI](./src/ui/) | Java | `nithin/nithin-shop-ui:v1.0` | Store frontend — product browsing, cart, checkout UI |
+| [Catalog](./src/catalog/) | Go | `nithin/nithin-shop-catalog:v1.0` | Product catalog REST API |
+| [Cart](./src/cart/) | Java | `nithin/nithin-shop-cart:v1.0` | Shopping cart management API |
+| [Orders](./src/orders/) | Java | `nithin/nithin-shop-orders:v1.0` | Order creation and tracking API |
+| [Checkout](./src/checkout/) | Node.js | `nithin/nithin-shop-checkout:v1.0` | Checkout orchestration API |
 
-> **📚 For detailed branching strategy, CI/CD setup, and advanced workflows, see [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md)**
+All services run in the `nithin-shop` Kubernetes namespace and communicate over internal cluster DNS.
+
+---
 
 ## Prerequisites
 
-Before you begin, ensure you have the following tools installed:
+Ensure the following tools are installed before you begin:
 
-- **AWS CLI** (configured with appropriate credentials)
-- **Terraform** (version 1.0.0 or later)
-- **kubectl** (compatible with Kubernetes 1.23+)
-- **Git** (2.0.0 or later)
-- **Docker** (for local development)
-- **Helm** 
+| Tool | Version | Install |
+|---|---|---|
+| AWS CLI | Latest | [Guide](https://docs.aws.amazon.com/cli/latest/userguide/install-cliv2.html) |
+| Terraform | ≥ 1.0.0 | [Guide](https://developer.hashicorp.com/terraform/install) |
+| kubectl | ≥ 1.23 | [Guide](https://kubernetes.io/docs/tasks/tools/) |
+| Helm | ≥ 3.0 | [Guide](https://helm.sh/docs/intro/install/) |
+| Docker | Latest | [Guide](https://docs.docker.com/get-docker/) |
+| Git | ≥ 2.0 | [Guide](https://git-scm.com/downloads) |
+
+---
 
 ## Getting Started
 
-Follow these steps to **install Prerequisites:**
+### 1. Configure AWS CLI
 
-- #### 1. AWS CLI:
-
-  * These commands will download and install the **AWS Command Line Interface**.
-
-```sh
-curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-unzip awscliv2.zip
-sudo ./aws/install
-
-# Verify the installation
-aws --version
-```
-
-- #### 2. Terraform:
-
-  - **Terraform** is installed by downloading the binary appropriate for your operating system.
-
-    - <details>
-      <summary><strong>Click for Linux & macOS Instructions</strong></summary>
-
-      1.  **Download the Binary**: Go to the [Terraform Downloads Page](https://releases.hashicorp.com/terraform/1.12.2) to find the correct zip file for your system (e.g., Linux AMD64, macOS ARM64).
-
-      2.  **Install the Binary**: Unzip the file and move the `terraform` executable to a directory in your system's PATH.
-
-        ```sh
-        # Example for a downloaded file
-        unzip terraform_1.9.0_linux_amd64.zip
-        sudo mv terraform /usr/local/bin/
-        ```
-        or
-        ```sh
-        # Example for macOS
-        brew install terraform
-        ```
-      3.  **Verify the Installation**:
-     
-        ```sh
-        terraform --version
-        ```
-      </details>
-  
-    - <details>
-      <summary><strong>Click for Windows Instructions</strong></summary>
-  
-        * **Official Guide:** [Install Terraform on Windows](https://developer.hashicorp.com/terraform/install)
-    
-      </details>
-
-- #### 3. kubectl:
-
-  * These commands install a specific version of **kubectl**.
-
-    - <details>
-      <summary><strong>Click for macOS Instructions</strong></summary>
-  
-        ```sh
-        # Download the kubectl binary
-        curl -LO "https://dl.k8s.io/release/v1.33.3/bin/darwin/arm64/kubectl"
-
-        # Make the binary executable
-        chmod +x ./kubectl
-
-          # Move the binary into your PATH
-        sudo mv ./kubectl /usr/local/bin/kubectl
-        ```
-
-      </details>
-
-    - <details>
-      <summary><strong>Click for Linux Instructions</strong></summary>
-  
-      ```sh
-      # Download the kubectl binary
-      curl -LO "https://dl.k8s.io/release/v1.33.3/bin/linux/amd64/kubectl"
-  
-      # Make the binary executable
-      chmod +x ./kubectl
-
-      # Move the binary into your PATH
-      sudo mv ./kubectl /usr/local/bin/kubectl
-      ```
-      
-      </details>
-
-- #### [4. Docker](https://docs.docker.com/desktop/setup/install/linux/):
-
-  - > **Step 1: Set Up the Repository:**
-
-    ```sh
-    sudo apt-get update
-    sudo apt-get install \
-        ca-certificates \
-        curl \
-        gnupg
-    ```
-
-  - > **Step 2: Add Docker’s Official GPG Key:**
-
-    ```sh
-    sudo install -m 0755 -d /etc/apt/keyrings
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-    sudo chmod a+r /etc/apt/keyrings/docker.gpg
-    ```
-  
-  - > **Step 3: Set Up the Docker Repository:**
-
-    ```sh
-    echo \
-      "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-      $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
-      sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-    ```
-
-
-  - > **Step 4: Install Docker Engine:**
-    
-    ```sh
-    sudo apt-get update
-    sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-    # Verify the installation
-    docker --version
-    ```
-
-- #### 5. Helm:
-  
-    ```sh
-    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3
-    chmod 700 get_helm.sh
-    ./get_helm.sh --version v3.18.4
-    ```
-
-
-
-Follow these steps to deploy the application:
-
-### Step 1. Configure AWS with **`Root User`** Credentials:
-
-  Ensure your AWS CLI is configured with the **Root user credentials:**
-
-```sh
+```bash
 aws configure
+# Enter: Access Key ID, Secret Access Key, Region, Output format
 ```
 
-### Step 2. Clone the Repository:
+### 2. Clone the Repository
 
-```sh
-git clone https://github.com/NITHIN/nithin-shop-k8s-ecommerce.git
-cd nithin-shop-k8s-ecommerce.git
+```bash
+git clone https://github.com/nithingowdahm87/eks-ecommerce-gitops.git
+cd eks-ecommerce-gitops
 ```
+
+### 3. Choose Your Deployment Strategy
 
 > [!IMPORTANT]
-> ### Step 3: Choose Your Deployment Strategy
+> **Main Branch** — Uses public Docker images (`nithin/nithin-shop-*:v1.0`). Ideal for learning, demos, and testing. No GitHub Actions required.
 >
-> **For Public Application (Main Branch):**
-> - Uses stable public ECR images (v1.2.2)
-> - Manual deployment control
-> - No GitHub Actions required
-> - Skip to Step 4 - infrastructure is ready
->
-> **For Production (GitOps Branch):**
-> - Uses private ECR with automated CI/CD
-> - Requires GitHub Actions setup
-> - See [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) for complete setup
->
-> ### GitHub Actions Setup (Production Branch Only):
-> 
-> If using the Production branch, configure these secrets in your GitHub repository:
-> 
-> | Secret Name           | Value                              |
-> |-----------------------|------------------------------------|
-> | `AWS_ACCESS_KEY_ID`   | `Your AWS Access Key ID`           |
-> | `AWS_SECRET_ACCESS_KEY` | `Your AWS Secret Access Key`     |
-> | `AWS_REGION`          | `region-name`                       |
-> | `AWS_ACCOUNT_ID`        | `your-account-id` |
+> **GitOps Branch** — Full production workflow. Uses private ECR images, auto-built on every commit via GitHub Actions. Requires GitHub Secrets setup (see [CI/CD Pipeline](#cicd-pipeline)).
 
+---
 
-### Step 4. Deploy Infrastructure with Terraform:
+## Terraform Deployment
 
-The deployment is split into two phases for better control:
+The infrastructure is deployed in **two phases** for safe, ordered provisioning.
 
+### Phase 1 — EKS Cluster & VPC
 
-### Phase 1 of Terraform: Create EKS Cluster 
-
-In Phase 1: Terraform Initialises and creates resources within the retail_app_eks module. 
-
-```sh
-cd nithin-shop-k8s-ecommerce.git/terraform/
+```bash
+cd terraform/
 terraform init
-terraform apply -target=module.retail_app_eks -target=module.vpc --auto-approve
+terraform apply \
+  -target=module.retail_app_eks \
+  -target=module.vpc \
+  --auto-approve
 ```
 
-<img width="1205" height="292" alt="image" src="https://github.com/user-attachments/assets/6f1e407e-4a4e-4a4c-9bdf-0c9b89681368" />
-
-
-This creates the core infrastructure, including:
-- VPC with public and private subnets
-- Amazon EKS cluster with Auto Mode enabled
+This provisions:
+- Custom VPC with public/private subnets
+- Amazon EKS cluster with Auto Mode
 - Security groups and IAM roles
-  
 
-### Step 6: Update kubeconfig to Access the Amazon EKS Cluster:
+### Update kubeconfig
+
+Once Phase 1 completes, configure `kubectl` to access the cluster:
+
+```bash
+aws eks update-kubeconfig --name nithin-shop-eks --region <your-region>
 ```
-aws eks update-kubeconfig --name nithin-shop --region <region>
+
+Verify access:
+
+```bash
+kubectl get nodes
 ```
 
-### Phase 2 of Terraform: Once you update kubeconfig, apply the Remaining Configuration:
-
+### Phase 2 — GitOps & Ingress Stack
 
 ```bash
 terraform apply --auto-approve
 ```
 
 This deploys:
-- ArgoCD for Setup GitOps
-- NGINX Ingress Controller
-- Cert Manager for SSL certificates
+- **ArgoCD** — GitOps operator
+- **NGINX Ingress Controller** — External load balancer
+- **Cert Manager** — TLS certificate management
 
-### Step 7: GitHub Actions (Production Branch Only)
+---
 
-> **Note**: This step is only required if you're using the **Production branch** for automated deployments. Skip this step if using the **Public Application branch** for simple deployment.
+## GitOps with ArgoCD
 
-For GitHub Actions, first configure secrets so the pipelines can be automatically triggered:
+All Kubernetes application deployments are managed by **ArgoCD** — no manual `kubectl apply` for application updates.
 
-**Create an IAM User, policies, and generate credentials**
-
-**Go to your GitHub repo → Settings → Secrets and variables → Actions → New repository secret.**
-
-
-| Secret Name           | Value                              |
-|-----------------------|------------------------------------|
-| `AWS_ACCESS_KEY_ID`   | `Your AWS Access Key ID`           |
-| `AWS_SECRET_ACCESS_KEY` | `Your AWS Secret Access Key`     |
-| `AWS_REGION`          | `region-name`                       |
-| `AWS_ACCOUNT_ID`        | `your-account-id` |
-
-
-
-> [!IMPORTANT]
-> Once the entire cluster is created, any changes pushed to the repository will automatically trigger GitHub Actions.
-
-GitHub Actions will automatically build and push the updated Docker images to Amazon ECR.
-
-
-
-<img width="2868" height="1130" alt="image" src="https://github.com/user-attachments/assets/f29c3416-d630-4463-81d2-aaa8af9a02da" />
-
-
-### Verify Deployment
-
-Check if the nodes are running:
+### Access the ArgoCD UI
 
 ```bash
-kubectl get nodes
-```
+# Get admin password
+kubectl -n argocd get secret argocd-initial-admin-secret \
+  -o jsonpath='{.data.password}' | base64 -d && echo
 
-### Step 8: Access the Application:
-
-The application is exposed through the NGINX Ingress Controller. Get the load balancer URL:
-
-```bash
-kubectl get svc -n ingress-nginx
-```
-
-Use the EXTERNAL-IP of the ingress-nginx-controller service to access the application.
-
-<img width="2912" height="1756" alt="image" src="https://github.com/user-attachments/assets/095077d6-d3cb-48f6-b021-e977db5fb242" />
-
-### Step 9: Argo CD Automated Deployment:
-
-**Verify ArgoCD installation**
-
-```
-kubectl get pods -n argocd
-```
-
-
-### Step 10: Port-forward to Argo CD UI and login:
-
-**Get ArgoCD admin password**
-```
-kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d
-```
-
-**Port-forward to Argo CD UI**
-```
+# Port-forward to local browser
 kubectl port-forward svc/argocd-server -n argocd 8080:443 &
 ```
 
-Open your browser and navigate to:
-https://localhost:8080
+Open: **https://localhost:8080**
+- Username: `admin`
+- Password: *(output from command above)*
 
-Username: admin 
+### ArgoCD Applications
 
-Password: <output of previous command>
+All 5 microservices are registered as individual ArgoCD applications under the `nithin-shop` project:
 
-### Step 10: Access ArgoCD UI
+| App | Source | Target |
+|---|---|---|
+| `nithin-shop-ui` | `src/ui/chart` | `in-cluster/nithin-shop` |
+| `nithin-shop-catalog` | `src/catalog/chart` | `in-cluster/nithin-shop` |
+| `nithin-shop-cart` | `src/cart/chart` | `in-cluster/nithin-shop` |
+| `nithin-shop-orders` | `src/orders/chart` | `in-cluster/nithin-shop` |
+| `nithin-shop-checkout` | `src/checkout/chart` | `in-cluster/nithin-shop` |
 
-Once ArgoCD is deployed, you can access the web interface:
+ArgoCD continuously reconciles the cluster state to match this repository. Any change merged to `main` is automatically detected and synced.
 
-![ArgoCD UI Dashboard](./docs/images/argocd-ui.png)
+---
 
-The ArgoCD UI provides:
-- **Application Status**: Real-time sync status of all services
-- **Resource View**: Detailed view of Kubernetes resources
-- **Sync Operations**: Manual sync and rollback capabilities
-- **Health Monitoring**: Application and resource health status
+## CI/CD Pipeline
 
-### Step 11: Monitor Application Deployment
+The production workflow uses **GitHub Actions** to build and push images to Amazon ECR automatically on every push to the `gitops` branch.
 
-```bash
-kubectl get pods -n nithin-shop
-kubectl get ingress -n nithin-shop
+### Setup GitHub Secrets
+
+Go to your repo → **Settings → Secrets and variables → Actions** and add:
+
+| Secret | Value |
+|---|---|
+| `AWS_ACCESS_KEY_ID` | Your IAM user access key |
+| `AWS_SECRET_ACCESS_KEY` | Your IAM user secret key |
+| `AWS_REGION` | e.g., `us-east-1` |
+| `AWS_ACCOUNT_ID` | Your 12-digit AWS account ID |
+
+### Pipeline Flow
+
+```
+Code Push (gitops branch)
+        ↓
+GitHub Actions triggered
+        ↓
+Docker build for changed service(s)
+        ↓
+Push to Amazon ECR (private)
+        ↓
+Update Helm chart image tag
+        ↓
+ArgoCD detects diff → auto-sync
+        ↓
+Rolling update deployed to EKS
 ```
 
-### Step 12: Cleanup
+> [!NOTE]
+> The `main` branch skips CI/CD and uses pre-built public images directly. Only the `gitops` branch triggers GitHub Actions.
 
-To delete all resources created by Terraform:
+---
 
+## Monitoring
 
-**For Phase 1: Run this command**
+The project includes a full observability stack deployed to the cluster.
+
+```bash
+# Check monitoring namespace
+kubectl get pods -n monitoring
+
+# Access Grafana (port-forward)
+kubectl port-forward svc/grafana -n monitoring 3000:80 &
+```
+
+Open: **http://localhost:3000** (default credentials in the Grafana secret)
+
+Pre-configured dashboards cover:
+- Kubernetes cluster node and pod metrics
+- Per-service request rates, latency, and error rates
+- EKS Auto Mode node pool utilization
+
+See [MONITORING_ACCESS.md](./MONITORING_ACCESS.md) for full dashboard setup.
+
+---
+
+## Verify Deployment
+
+```bash
+# Check all pods
+kubectl get pods -n nithin-shop
+
+# Check services
+kubectl get svc -n nithin-shop
+
+# Get ingress / external load balancer URL
+kubectl get svc -n ingress-nginx
+
+# Check ArgoCD application sync status
+kubectl get applications -n argocd
+```
+
+Use the `EXTERNAL-IP` from the ingress-nginx-controller service to access the storefront in your browser.
+
+---
+
+## Cleanup
+
+Destroy all AWS resources when done to avoid charges.
+
+### Phase 1 — Remove EKS Cluster
 
 ```bash
 terraform destroy -target=module.retail_app_eks --auto-approve
 ```
 
-**For Phase 2: Run this command**
-```
+### Phase 2 — Remove Remaining Resources
+
+```bash
 terraform destroy --auto-approve
 ```
 
-<img width="1139" height="439" alt="image" src="https://github.com/user-attachments/assets/5258761a-01c4-49d0-b6f3-997fc10a9f35" />
-
 > [!NOTE]
-> Only ECR Repositories you need to Delete it from AWS Console Manually.
+> ECR repositories must be deleted manually from the AWS Console — Terraform does not destroy non-empty registries by default.
 
-
+---
 
 ## Troubleshooting
 
-### Common Issues
+### Image Pull Errors
 
-#### **Image Pull Errors**
 ```
-Error: Failed to pull image "123456789012.dkr.ecr.us-west-2.amazonaws.com/nithin-shop-ui:abc1234"
+Error: Failed to pull image "nithin/nithin-shop-ui:v1.0"
 ```
-**Solutions**:
-1. Ensure you're using the correct branch for your deployment strategy
-2. For Production branch: Check GitHub Actions completed successfully
-3. For Public Application branch: Verify you're using public ECR images
-4. Check AWS credentials and ECR permissions
 
-#### **GitHub Actions Not Triggering**
-**Solutions**:
-1. Ensure changes are in `src/` directory
-2. Verify you're on the `production` branch (gitops)
-3. Check GitHub Actions is enabled in repository settings
-4. Review [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md) for detailed setup
+- **Main branch**: Verify the image tag exists on Docker Hub under `nithin/` namespace
+- **GitOps branch**: Check GitHub Actions completed successfully and ECR push succeeded
+- Confirm `kubectl get secret` shows a valid image pull secret in the `nithin-shop` namespace
 
-### Getting Help
+### ArgoCD Out of Sync
 
-- **Basic deployment issues**: Check this README
-- **Advanced GitOps issues**: See [BRANCHING_STRATEGY.md](./BRANCHING_STRATEGY.md)
-- **Infrastructure issues**: Review Terraform logs
-- **Application issues**: Check ArgoCD UI and kubectl logs
+```bash
+# Force a manual sync
+argocd app sync nithin-shop-ui
+
+# Or via kubectl
+kubectl patch application nithin-shop-ui -n argocd \
+  --type merge -p '{"operation":{"sync":{}}}'
+```
+
+### Nodes Not Ready
+
+```bash
+kubectl describe node <node-name>
+# Check for EKS Auto Mode node pool events
+kubectl get events -n kube-system --sort-by='.lastTimestamp'
+```
+
+### GitHub Actions Not Triggering
+
+1. Confirm you pushed to the `gitops` branch, not `main`
+2. Verify all 4 GitHub Secrets are set correctly
+3. Check **Actions** tab in the repo for workflow run logs
+
+---
+
+## Project Structure
+
+```
+eks-ecommerce-gitops/
+├── src/
+│   ├── ui/           # Java frontend + Helm chart
+│   ├── catalog/      # Go catalog API + Helm chart
+│   ├── cart/         # Java cart API + Helm chart
+│   ├── orders/       # Java orders API + Helm chart
+│   └── checkout/     # Node.js checkout API + Helm chart
+├── terraform/        # All AWS infrastructure (EKS, VPC, ArgoCD, Ingress)
+├── argocd/           # ArgoCD Application manifests
+├── docs/             # Architecture diagrams and screenshots
+├── BRANCHING_STRATEGY.md
+├── MONITORING_ACCESS.md
+└── README.md
+```
+
+---
 
 ## License
 
-This project is licensed under the Apache License 2.0 - see the [LICENSE](./LICENSE) file for details.
+This project is licensed under the **Apache License 2.0** — see the [LICENSE](./LICENSE) file for details.
+
+---
+
+<div align="center">
+  Built with ☕ and a lot of <code>kubectl get pods</code> by <a href="https://github.com/nithingowdahm87">NITHIN</a>
+</div>
