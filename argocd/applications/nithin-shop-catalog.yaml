@@ -8,7 +8,7 @@ metadata:
 spec:
   project: nithin-shop
   source:
-    repoURL: https://github.com/NITHIN/nithin-shop-k8s-ecommerce
+    repoURL: https://github.com/nithingowdahm87/eks-ecommerce-gitops
     targetRevision: main
     path: src/catalog/chart
     helm:
@@ -22,4 +22,4 @@ spec:
       prune: true
       selfHeal: true
     syncOptions:
-      - CreateNamespace=true 
+      - CreateNamespace=true
