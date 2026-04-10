@@ -41,6 +41,9 @@ Key highlights:
 - **Helm charts** — each service has its own chart for clean, versioned releases
 - **Full observability** — Prometheus + Grafana stack included
 
+**Tech Stack:**
+`AWS EKS Auto Mode` · `Terraform` · `ArgoCD` · `Helm` · `GitHub Actions` · `Amazon ECR` · `NGINX Ingress` · `Cert Manager` · `Prometheus` · `Grafana` · `Java` · `Go` · `Node.js`
+
 > View animated infra overview: [docs/images/](./docs/images/)
 
 - **UI Service**: Java-based frontend
@@ -60,11 +63,24 @@ Key highlights:
 |:---:|:---:|
 | <img src="./docs/screenshots/app3.png" alt="Cart" width="100%"> | <img src="./docs/screenshots/app4.png" alt="Checkout" width="100%"> |
 
+### Product Listing (Page 2)
+![Product Listing](./docs/screenshots/app2.png)
 
-### ArgoCD — Operations Dashboard
+### Application Services — Health Status
+
+| Service Health Dashboard | Kubernetes Pod Metadata |
+|:---:|:---:|
+| <img src="./docs/screenshots/app5.png" alt="Services Health" width="100%"> | <img src="./docs/screenshots/app6.png" alt="K8s Metadata" width="100%"> |
+
+### Kubernetes Node Info
+![Node Info](./docs/screenshots/app7.png)
+
+### ArgoCD — Applications Dashboard
 ![ArgoCD](./docs/screenshots/argoCD.png)
 
+> All 5 services running healthy in the `nithin-shop` namespace, managed by ArgoCD `v2.10.4`.
 
+---
 
 ## Quick Start
 
@@ -74,35 +90,45 @@ Key highlights:
 4. **Deploy Infrastructure**: Run Terraform in two phases (see [Getting Started](#getting-started))
 5. **Access Application**: Get load balancer URL and browse the retail store
 
+---
+
 ## Architecture
 
-![Infrastructure Architecture Diagram](./docs/images/architecture.jpg)
+### Infrastructure Architecture
+
+![Infrastructure Architecture](./docs/images/architecture.png)
 
 **Core infrastructure components:**
-- **VPC** — Custom VPC with public and private subnets across multiple AZs
+- **VPC** — Custom VPC with public and private subnets across 3 AZs
 - **EKS Auto Mode** — Managed Kubernetes with automatic node provisioning and scaling
 - **IAM** — Fine-grained roles and policies for cluster and workload access
-- **ArgoCD** — GitOps operator that syncs Kubernetes state from this repository
+- **ArgoCD** — GitOps operator that syncs Kubernetes state from this repo
 - **NGINX Ingress** — External traffic routing and load balancing
 - **Cert Manager** — Automated TLS certificate provisioning
 
 ---
 
-## Microservices
+### Application Architecture
 
-![Application Architecture Diagram](./docs/images/application-architecture.png)
+![Application Architecture](./docs/images/application-architecture.png)
+
+> External users hit NGINX Ingress → UI Service, which fans out to Catalog, Cart, Checkout,
+> and Orders over internal Kubernetes cluster DNS. ArgoCD deploys each service from its own Helm chart.
+
+---
+
+## Microservices
 
 | Service | Language | Docker Image | Helm Chart | Description |
 |---|---|---|---|---|
-| [UI](./src/ui/) | Java | `nithingowdahm87/shopping:nithin-shop-ui-v1.0` | [src/ui/chart](./src/ui/chart) | Store frontend — product browsing, cart, checkout UI |
-| [Catalog](./src/catalog/) | Go | `nithingowdahm87/shopping:nithin-shop-catalog-v1.0` | [src/catalog/chart](./src/catalog/chart) | Product catalog REST API |
-| [Cart](./src/cart/) | Java | `nithingowdahm87/shopping:nithin-shop-cart-v1.0` | [src/cart/chart](./src/cart/chart) | Shopping cart management API |
-| [Orders](./src/orders/) | Java | `nithingowdahm87/shopping:nithin-shop-orders-v1.0` | [src/orders/chart](./src/orders/chart) | Order creation and tracking API |
+| [UI](./src/ui/) | Java | `nithingowdahm87/shopping:nithin-shop-ui-v1.0` | [src/ui/chart](./src/ui/chart) | Store user interface |
+| [Catalog](./src/catalog/) | Go | `nithingowdahm87/shopping:nithin-shop-catalog-v1.0` | [src/catalog/chart](./src/catalog/chart) | Product catalog API |
+| [Cart](./src/cart/) | Java | `nithingowdahm87/shopping:nithin-shop-cart-v1.0` | [src/cart/chart](./src/cart/chart) | Shopping cart API |
+| [Orders](./src/orders/) | Java | `nithingowdahm87/shopping:nithin-shop-orders-v1.0` | [src/orders/chart](./src/orders/chart) | Order management API |
 | [Checkout](./src/checkout/) | Node.js | `nithingowdahm87/shopping:nithin-shop-checkout-v1.0` | [src/checkout/chart](./src/checkout/chart) | Checkout orchestration API |
 
-> All services running healthy in the `nithin-shop` namespace, managed by ArgoCD `v2.10.4`.
-
-All services communicate over internal cluster DNS.
+All services run in the `nithin-shop` Kubernetes namespace and communicate over internal cluster DNS.
+Each service has its own Helm chart, deployed and managed independently by ArgoCD.
 
 ---
 
@@ -138,6 +164,10 @@ cd eks-ecommerce-gitops
 ```
 
 ### 3. Choose Your Deployment Strategy
+
+> [!NOTE]
+> The `gitops` branch with full GitHub Actions CI/CD is currently in progress.
+> Use the `main` branch for demo deployments with public Docker images.
 
 > [!IMPORTANT]
 > **Main Branch** — Uses public Docker images (`nithin/nithin-shop-*:v1.0`). Ideal for learning, demos, and testing. No GitHub Actions required.
@@ -188,6 +218,8 @@ This deploys:
 - **ArgoCD** — GitOps operator
 - **NGINX Ingress Controller** — External load balancer
 - **Cert Manager** — TLS certificate management
+
+> For all Terraform input variables and backend configuration, see [terraform/README.md](./terraform/README.md).
 
 ---
 

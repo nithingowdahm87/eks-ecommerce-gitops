@@ -112,17 +112,30 @@ kubectl port-forward svc/argocd-server -n argocd 8080:443
 
 ## 🔧 Customization
 
-### Variables
+## Input Variables
 
+| Variable | Type | Default | Description |
+|---|---|---|---|
+| `aws_region` | string | `us-east-1` | AWS region to deploy into |
+| `cluster_name` | string | `nithin-shop-eks` | EKS cluster name |
+| `cluster_version` | string | `1.31` | Kubernetes version |
+| `vpc_cidr` | string | `10.0.0.0/16` | CIDR block for the VPC |
+| `environment` | string | `production` | Deployment environment tag |
+
+## Remote State (Recommended)
+
+For team use, configure a remote backend in `backend.tf`:
 
 ```hcl
-aws_region                = "us-west-2"
-cluster_name              = "nithin-shop"        # Will have random suffix added
-environment               = "dev"
-kubernetes_version        = "1.33"
-vpc_cidr                  = "10.0.0.0/16"
-enable_single_nat_gateway = true    # Set to false for production
-enable_monitoring         = false   # Set to true to enable monitoring
+terraform {
+  backend "s3" {
+    bucket         = "nithin-shop-terraform-state"
+    key            = "eks/terraform.tfstate"
+    region         = "us-east-1"
+    dynamodb_table = "nithin-shop-terraform-locks"
+    encrypt        = true
+  }
+}
 ```
 
 ### Conflict Prevention

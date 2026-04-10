@@ -35,4 +35,28 @@ devenv.local.nix
 /terraform/eks/default/.terraform
 /terraform/eks/default/.terraform.lock.hcl
 /terraform/eks/default/.terraform.tfstate
+/terraform/eks/default/.terraform.tfstate
 /terraform/eks/default/.terraform.tfstate.backup
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+*.tfplan
+override.tf
+override.tf.json
+
+# Helm
+charts/*/charts/
+*.tgz
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
