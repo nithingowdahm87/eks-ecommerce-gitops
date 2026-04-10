@@ -52,16 +52,16 @@ Key highlights:
 ## Live Screenshots
 
 ### Storefront — Product Catalog
-![Storefront](./docs/screenshots/app1.png)
+<img src="./docs/screenshots/app1.png" alt="Storefront" width="50%">
 
 ### Cart — Loadout View
-![Cart](./docs/screenshots/app3.png)
+<img src="./docs/screenshots/app3.png" alt="Cart" width="50%">
 
 ### Checkout — Rendezvous Location
-![Checkout](./docs/screenshots/app4.png)
+<img src="./docs/screenshots/app4.png" alt="Checkout" width="50%">
 
 ### ArgoCD — Operations Dashboard
-![ArgoCD](./docs/screenshots/argoCD.png)
+<img src="./docs/screenshots/argoCD.png" alt="ArgoCD" width="50%">
 
 | Component                  | Language | Docker Image                                                                                    | Helm Chart            | Description                             |
 | -------------------------- | -------- | ----------------------------------------------------------------------------------------------- | --------------------- | --------------------------------------- |
@@ -231,17 +231,7 @@ Once ArgoCD is deployed, you can access the web interface at `https://localhost:
 
 ## CI/CD Pipeline
 
-## Application Screenshots
 
-| Screenshot | Description |
-|---|---|
-| ![app1](./docs/screenshots/app1.png) | Home / Catalog page |
-| ![app2](./docs/screenshots/app2.png) | Product Detail |
-| ![app3](./docs/screenshots/app3.png) | Shopping Cart |
-| ![app4](./docs/screenshots/app4.png) | Checkout Flow |
-| ![app5](./docs/screenshots/app5.png) | Order Confirmation |
-| ![app6](./docs/screenshots/app6.png) | ArgoCD Dashboard |
-| ![argoCD](./docs/screenshots/argoCD.png) | ArgoCD App Sync View |
 
 ### Step 11: Monitor Application Deployment
 
