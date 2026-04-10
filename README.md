@@ -52,19 +52,16 @@ Key highlights:
 ## Live Screenshots
 
 ### Storefront — Product Catalog
-![Storefront](./docs/screenshots/app1.jpg)
-
-### Product Listing (Second Page)
-![Product Listing](./docs/screenshots/app2.jpg)
+![Storefront](./docs/screenshots/app1.png)
 
 ### Cart — Loadout View
-![Cart](./docs/screenshots/app3.jpg)
+![Cart](./docs/screenshots/app3.png)
 
 ### Checkout — Rendezvous Location
-![Checkout](./docs/screenshots/app4.jpg)
+![Checkout](./docs/screenshots/app4.png)
 
-### Application Services — Health Status
-![Services Health](./docs/screenshots/app5.jpg)
+### ArgoCD — Operations Dashboard
+![ArgoCD](./docs/screenshots/argoCD.png)
 
 | Component                  | Language | Docker Image                                                                                    | Helm Chart            | Description                             |
 | -------------------------- | -------- | ----------------------------------------------------------------------------------------------- | --------------------- | --------------------------------------- |
@@ -86,34 +83,7 @@ Key highlights:
 4. **Deploy Infrastructure**: Run Terraform in two phases (see [Getting Started](#getting-started))
 5. **Access Application**: Get load balancer URL and browse the retail store
 
-```
-┌─────────────────────────────────────────────────────┐
-│                     AWS Cloud                        │
-│                                                     │
-│  ┌─────────────────────────────────────────────┐   │
-│  │              Amazon EKS (Auto Mode)          │   │
-│  │                                             │   │
-│  │  ┌──────────┐  ┌──────────┐  ┌──────────┐  │   │
-│  │  │    UI    │  │ Catalog  │  │   Cart   │  │   │
-│  │  │  Service │  │ Service  │  │  Service │  │   │
-│  │  └──────────┘  └──────────┘  └──────────┘  │   │
-│  │                                             │   │
-│  │  ┌──────────┐  ┌──────────┐                 │   │
-│  │  │  Orders  │  │Checkout  │                 │   │
-│  │  │  Service │  │ Service  │                 │   │
-│  │  └──────────┘  └──────────┘                 │   │
-│  │                                             │   │
-│  │  Namespace: nithin-shop                     │   │
-│  └─────────────────────────────────────────────┘   │
-│                                                     │
-│  ┌────────────┐  ┌──────────┐  ┌───────────────┐  │
-│  │    VPC     │  │  ArgoCD  │  │  NGINX Ingress │  │
-│  │ (pub+priv) │  │ (GitOps) │  │  + Cert Manager│  │
-│  └────────────┘  └──────────┘  └───────────────┘  │
-└─────────────────────────────────────────────────────┘
-         ↑                    ↑
-   Terraform IaC        GitHub Actions CI/CD
-```
+![Infrastructure Architecture Diagram](./docs/images/architecture.png)
 
 **Core infrastructure components:**
 - **VPC** — Custom VPC with public and private subnets across multiple AZs
@@ -126,6 +96,8 @@ Key highlights:
 ---
 
 ## Microservices
+
+![Application Architecture Diagram](./docs/images/application-architecture.png)
 
 | Service | Language | Docker Image | Description |
 |---|---|---|---|
