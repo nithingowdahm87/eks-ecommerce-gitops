@@ -1,20 +1,13 @@
-# Retail Store Sample App - GitOps with Amazon EKS Auto Mode
+# nithin-shop — K8s Microservices E-Commerce with EKS GitOps
 
-![Banner](./docs/images/banner.png)
+> **Author:** NITHIN &nbsp;|&nbsp; **Repo:** [eks-ecommerce-gitops](https://github.com/nithingowdahm87/eks-ecommerce-gitops) &nbsp;|&nbsp; **Namespace:** `nithin-shop`
 
 <div align="center">
-  <div align="center">
 
-[![Stars](https://img.shields.io/github/stars/LondheShubham153/nithin-shop-sample-app)](Stars)
-![GitHub License](https://img.shields.io/github/license/LondheShubham153/nithin-shop-sample-app?color=green)
-![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fraw.githubusercontent.com%LondheShubham153%2Fnithin-shop-sample-app%2Frefs%2Fheads%2Fmain%2F.release-please-manifest.json&query=%24%5B%22.%22%5D&label=release)
+[![Stars](https://img.shields.io/github/stars/nithingowdahm87/eks-ecommerce-gitops)](https://github.com/nithingowdahm87/eks-ecommerce-gitops/stargazers)
+![GitHub License](https://img.shields.io/github/license/nithingowdahm87/eks-ecommerce-gitops?color=green)
 
-
-  </div>
-
-  <strong>
-  <h2>AWS Containers Retail Sample</h2>
-  </strong>
+  <strong><h2>nithin-shop — AWS EKS Microservices E-Commerce Platform</h2></strong>
 </div>
 
 This is a sample application designed to illustrate various concepts related to containers on AWS. It presents a sample retail store application including a product catalog, shopping cart and checkout, deployed using modern DevOps practices including GitOps and Infrastructure as Code.
@@ -41,6 +34,8 @@ The Retail Store Sample App demonstrates a modern microservices architecture dep
 
 ![Application Architecture Diagram](./docs/images/application-architecture.png)
 
+> View animated infra overview: [docs/images/](./docs/images/)
+
 - **UI Service**: Java-based frontend
 - **Catalog Service**: Go-based product catalog API
 - **Cart Service**: Java-based shopping cart API
@@ -63,15 +58,13 @@ The Infrastructure Architecture follows cloud-native best practices:
 
 The application has been deliberately over-engineered to generate multiple de-coupled components. These components generally have different infrastructure dependencies, and may support multiple "backends" (example: Carts service supports MongoDB or DynamoDB).
 
-![Architecture](https://github.com/aws-containers/nithin-shop-sample-app/raw/main/docs/images/architecture.png)
-
-| Component                  | Language | Container Image                                                             | Helm Chart                                                                        | Description                             |
-| -------------------------- | -------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | --------------------------------------- |
-| [UI](./src/ui/)            | Java     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-ui)       | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-ui-chart)       | Store user interface                    |
-| [Catalog](./src/catalog/)  | Go       | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-catalog)  | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-catalog-chart)  | Product catalog API                     |
-| [Cart](./src/cart/)        | Java     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-cart)     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-cart-chart)     | User shopping carts API                 |
-| [Orders](./src/orders)     | Java     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-orders)   | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-orders-chart)   | User orders API                         |
-| [Checkout](./src/checkout) | Node     | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-checkout) | [Link](https://gallery.ecr.aws/aws-containers/nithin-shop-sample-checkout-chart) | API to orchestrate the checkout process |
+| Component                  | Language | Docker Image                                                                                    | Helm Chart            | Description                             |
+| -------------------------- | -------- | ----------------------------------------------------------------------------------------------- | --------------------- | --------------------------------------- |
+| [UI](./src/ui/)            | Java     | `nithingowdahm87/shopping:nithin-shop-ui-v1.0`       | [src/ui/chart](./src/ui/chart)       | Store user interface                    |
+| [Catalog](./src/catalog/)  | Go       | `nithingowdahm87/shopping:nithin-shop-catalog-v1.0`  | [src/catalog/chart](./src/catalog/chart)  | Product catalog API                     |
+| [Cart](./src/cart/)        | Java     | `nithingowdahm87/shopping:nithin-shop-cart-v1.0`     | [src/cart/chart](./src/cart/chart)     | User shopping carts API                 |
+| [Orders](./src/orders)     | Java     | `nithingowdahm87/shopping:nithin-shop-orders-v1.0`   | [src/orders/chart](./src/orders/chart)   | User orders API                         |
+| [Checkout](./src/checkout) | Node     | `nithingowdahm87/shopping:nithin-shop-checkout-v1.0` | [src/checkout/chart](./src/checkout/chart) | API to orchestrate the checkout process |
 
 
 ## Quick Start
@@ -80,7 +73,7 @@ The application has been deliberately over-engineered to generate multiple de-co
 
 1. **Install Prerequisites**: AWS CLI, Terraform, kubectl, Docker, Helm
 2. **Configure AWS**: `aws configure` with appropriate credentials
-3. **Clone Repository**: `git clone https://github.com/NITHIN/nithin-shop-k8s-ecommerce.git`
+3. **Clone Repository**: `git clone https://github.com/nithingowdahm87/eks-ecommerce-gitops.git`
 4. **Deploy Infrastructure**: Run Terraform in two phases (see [Getting Started](#getting-started))
 5. **Access Application**: Get load balancer URL and browse the retail store
 
@@ -268,8 +261,8 @@ aws configure
 ### Step 2. Clone the Repository:
 
 ```sh
-git clone https://github.com/NITHIN/nithin-shop-k8s-ecommerce.git
-cd nithin-shop-k8s-ecommerce.git
+git clone https://github.com/nithingowdahm87/eks-ecommerce-gitops.git
+cd eks-ecommerce-gitops
 ```
 
 > [!IMPORTANT]
@@ -305,12 +298,12 @@ The deployment is split into two phases for better control:
 
 ### Phase 1 of Terraform: Create EKS Cluster 
 
-In Phase 1: Terraform Initialises and creates resources within the retail_app_eks module. 
+In Phase 1: Terraform initialises and creates resources within the `nithin_shop_eks` module.
 
 ```sh
-cd nithin-shop-k8s-ecommerce.git/terraform/
+cd eks-ecommerce-gitops/terraform/
 terraform init
-terraform apply -target=module.retail_app_eks -target=module.vpc --auto-approve
+terraform apply -target=module.nithin_shop_eks -target=module.vpc --auto-approve
 ```
 
 <img width="1205" height="292" alt="image" src="https://github.com/user-attachments/assets/6f1e407e-4a4e-4a4c-9bdf-0c9b89681368" />
@@ -324,7 +317,7 @@ This creates the core infrastructure, including:
 
 ### Step 6: Update kubeconfig to Access the Amazon EKS Cluster:
 ```
-aws eks update-kubeconfig --name nithin-shop --region <region>
+aws eks update-kubeconfig --name nithin-shop-eks --region <region>
 ```
 
 ### Phase 2 of Terraform: Once you update kubeconfig, apply the Remaining Configuration:
@@ -419,15 +412,25 @@ Password: <output of previous command>
 
 ### Step 10: Access ArgoCD UI
 
-Once ArgoCD is deployed, you can access the web interface:
-
-![ArgoCD UI Dashboard](./docs/images/argocd-ui.png)
+Once ArgoCD is deployed, you can access the web interface at `https://localhost:8080`.
 
 The ArgoCD UI provides:
 - **Application Status**: Real-time sync status of all services
 - **Resource View**: Detailed view of Kubernetes resources
 - **Sync Operations**: Manual sync and rollback capabilities
 - **Health Monitoring**: Application and resource health status
+
+## Application Screenshots
+
+| Screenshot | Description |
+|---|---|
+| ![app1](./docs/screenshots/app1.jpg) | Home / Catalog page |
+| ![app2](./docs/screenshots/app2.jpg) | Product Detail |
+| ![app3](./docs/screenshots/app3.jpg) | Shopping Cart |
+| ![app4](./docs/screenshots/app4.jpg) | Checkout Flow |
+| ![app5](./docs/screenshots/app5.jpg) | Order Confirmation |
+| ![app6](./docs/screenshots/app6.jpg) | ArgoCD Dashboard |
+| ![argoCD](./docs/screenshots/argoCD.jpg) | ArgoCD App Sync View |
 
 ### Step 11: Monitor Application Deployment
 
