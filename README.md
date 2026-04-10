@@ -52,7 +52,7 @@ Key highlights:
 ## Live Screenshots
 
 ### Storefront — Product Catalog
-<img src="./docs/screenshots/app1.png" alt="Storefront" width="50%">
+![Storefront](./docs/screenshots/app1.png)
 
 ### Cart — Loadout View
 <img src="./docs/screenshots/app3.png" alt="Cart" width="50%">
@@ -61,7 +61,7 @@ Key highlights:
 <img src="./docs/screenshots/app4.png" alt="Checkout" width="50%">
 
 ### ArgoCD — Operations Dashboard
-<img src="./docs/screenshots/argoCD.png" alt="ArgoCD" width="50%">
+![ArgoCD](./docs/screenshots/argoCD.png)
 
 | Component                  | Language | Docker Image                                                                                    | Helm Chart            | Description                             |
 | -------------------------- | -------- | ----------------------------------------------------------------------------------------------- | --------------------- | --------------------------------------- |
