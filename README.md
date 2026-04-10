@@ -54,11 +54,12 @@ Key highlights:
 ### Storefront — Product Catalog
 ![Storefront](./docs/screenshots/app1.png)
 
-### Cart — Loadout View
-<img src="./docs/screenshots/app3.png" alt="Cart" width="50%">
+### Shopping Flow
 
-### Checkout — Rendezvous Location
-<img src="./docs/screenshots/app4.png" alt="Checkout" width="50%">
+| Cart — Loadout View | Checkout — Rendezvous Location |
+|:---:|:---:|
+| <img src="./docs/screenshots/app3.png" alt="Cart" width="100%"> | <img src="./docs/screenshots/app4.png" alt="Checkout" width="100%"> |
+
 
 ### ArgoCD — Operations Dashboard
 ![ArgoCD](./docs/screenshots/argoCD.png)
