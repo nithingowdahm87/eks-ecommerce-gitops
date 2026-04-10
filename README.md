@@ -263,13 +263,13 @@ Once ArgoCD is deployed, you can access the web interface at `https://localhost:
 
 | Screenshot | Description |
 |---|---|
-| ![app1](./docs/screenshots/app1.jpg) | Home / Catalog page |
-| ![app2](./docs/screenshots/app2.jpg) | Product Detail |
-| ![app3](./docs/screenshots/app3.jpg) | Shopping Cart |
-| ![app4](./docs/screenshots/app4.jpg) | Checkout Flow |
-| ![app5](./docs/screenshots/app5.jpg) | Order Confirmation |
-| ![app6](./docs/screenshots/app6.jpg) | ArgoCD Dashboard |
-| ![argoCD](./docs/screenshots/argoCD.jpg) | ArgoCD App Sync View |
+| ![app1](./docs/screenshots/app1.png) | Home / Catalog page |
+| ![app2](./docs/screenshots/app2.png) | Product Detail |
+| ![app3](./docs/screenshots/app3.png) | Shopping Cart |
+| ![app4](./docs/screenshots/app4.png) | Checkout Flow |
+| ![app5](./docs/screenshots/app5.png) | Order Confirmation |
+| ![app6](./docs/screenshots/app6.png) | ArgoCD Dashboard |
+| ![argoCD](./docs/screenshots/argoCD.png) | ArgoCD App Sync View |
 
 ### Step 11: Monitor Application Deployment
 
